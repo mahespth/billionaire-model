@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>32-Year Countdown Clock</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+    }
+
+    .clock {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border: 8px solid #fff;
+      border-radius: 50%;
+      background: #222;
+    }
+
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom;
+      background: white;
+      transform: translateX(-50%) rotate(0deg);
+    }
+
+    .second-hand {
+      height: 45%;
+      width: 2px;
+      background: red;
+    }
+
+    .hour-hand {
+      height: 35%;
+      width: 6px;
+    }
+
+    .day-hand {
+      height: 25%;
+      width: 10px;
+      background: #0f0;
+    }
+
+    .center-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .label {
+      position: absolute;
+      top: 110%;
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="clock">
+  <div class="hand second-hand" id="secondHand"></div>
+  <div class="hand hour-hand" id="hourHand"></div>
+  <div class="hand day-hand" id="dayHand"></div>
+  <div class="center-dot"></div>
+  <div class="label" id="timeLabel"></div>
+</div>
+
+<script>
+  // Total countdown duration: 32 years in milliseconds
+  const start = Date.now();
+  const totalYears = 32;
+  const totalMs = totalYears * 365.25 * 24 * 60 * 60 * 1000;
+
+  // 31.8 years = 31 years + 292 days
+  const startOffsetMs = (0.2 * 365.25 * 24 * 60 * 60 * 1000); // 0.2 years worth of ms
+  const countdownStart = start - startOffsetMs;
+
+  function updateClock() {
+    const now = Date.now();
+    const elapsed = now - countdownStart;
+    const remaining = Math.max(0, totalMs - elapsed);
+
+    const remainingSeconds = remaining / 1000;
+
+    // Breakdown
+    const years = remainingSeconds / (365.25 * 24 * 60 * 60);
+    const days = (years % 1) * 365.25;
+    const hours = (days % 1) * 24;
+    const seconds = (hours % 1) * 3600;
+
+    const dayFraction = (days % 365.25) / 365.25;
+    const hourFraction = (hours % 24) / 24;
+    const secondFraction = (seconds % 60) / 60;
+
+    const dayDeg = dayFraction * 360;
+    const hourDeg = hourFraction * 360;
+    const secondDeg = secondFraction * 360;
+
+    document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+    document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+    document.getElementById('dayHand').style.transform = `translateX(-50%) rotate(${dayDeg}deg)`;
+
+    document.getElementById('timeLabel').textContent = `${years.toFixed(6)} years remaining`;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
+</body>
+</html>
