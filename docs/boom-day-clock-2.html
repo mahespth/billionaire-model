@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>32-Year Countdown Clock</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+      gap: 40px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: row;
+      gap: 40px;
+    }
+
+    .frame {
+      background: #1e1e1e;
+      border: 2px solid #444;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      height: 90vh;
+      overflow-y: auto;
+    }
+
+    .clock-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .digital-timer {
+      font-size: 24px;
+      font-weight: bold;
+      color: #0f0;
+    }
+
+    .clock {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border: 8px solid #fff;
+      border-radius: 50%;
+      background: #222;
+    }
+
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom;
+      background: white;
+      transform: translateX(-50%) rotate(0deg);
+    }
+
+    .second-hand {
+      height: 45%;
+      width: 2px;
+      background: red;
+    }
+
+    .hour-hand {
+      height: 35%;
+      width: 6px;
+    }
+
+    .day-hand {
+      height: 25%;
+      width: 10px;
+      background: #0f0;
+    }
+
+    .center-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .label {
+      position: absolute;
+      top: 110%;
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="frame">
+    <h2>Billionaire Model</h2>
+    <p>This is a thought experiment for modeling wealth generation over time.</p>
+    <h3>Formula</h3>
+    <pre><code>Total = Income - Spending + Growth - Waste</code></pre>
+    <h3>Explanation</h3>
+    <ul>
+      <li><strong>Income</strong>: Money generated through work or investments.</li>
+      <li><strong>Spending</strong>: Living expenses, taxes, liabilities.</li>
+      <li><strong>Growth</strong>: Compounded returns, business scale, automation.</li>
+      <li><strong>Waste</strong>: Inefficiencies, bad investments, decay over time.</li>
+    </ul>
+    <h3>Why 32 Years?</h3>
+    <p>The model sets a hypothetical billionaire outcome in 32 years, assuming consistent discipline, growth, and efficiency.</p>
+    <h3>Usage</h3>
+    <p>Treat each tick as a nudge toward intentional wealth-building.</p>
+    <p>Inspired by the <a href="https://github.com/mahespth/billionaire-model" target="_blank" style="color: lightblue;">this GitHub project</a>.</p>
+  </div>
+
+  <div class="clock-container">
+    <div class="digital-timer" id="digitalCountdown">Loading...</div>
+    <div class="clock">
+      <div class="hand second-hand" id="secondHand"></div>
+      <div class="hand hour-hand" id="hourHand"></div>
+      <div class="hand day-hand" id="dayHand"></div>
+      <div class="center-dot"></div>
+      <div class="label" id="timeLabel"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const totalYears = 32;
+  const totalMs = totalYears * 365.25 * 24 * 60 * 60 * 1000;
+  const countdownStart = new Date(Date.UTC(2025, 2, 26, 0, 0, 0)).getTime();
+
+  function updateClock() {
+    const now = Date.now();
+    const elapsed = now - countdownStart;
+    const remaining = Math.max(0, totalMs - elapsed);
+
+    const remainingSeconds = Math.floor(remaining / 1000);
+    document.getElementById('digitalCountdown').textContent = `${remainingSeconds.toLocaleString()} seconds remaining`;
+
+    const years = remaining / (365.25 * 24 * 60 * 60 * 1000);
+    const days = (years % 1) * 365.25;
+    const hours = (days % 1) * 24;
+    const seconds = (hours % 1) * 3600;
+
+    const dayFraction = (days % 365.25) / 365.25;
+    const hourFraction = (hours % 24) / 24;
+    const secondFraction = (seconds % 60) / 60;
+
+    const dayDeg = dayFraction * 360;
+    const hourDeg = hourFraction * 360;
+    const secondDeg = secondFraction * 360;
+
+    document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+    document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+    document.getElementById('dayHand').style.transform = `translateX(-50%) rotate(${dayDeg}deg)`;
+
+    document.getElementById('timeLabel').textContent = `${years.toFixed(6)} years remaining`;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
+</body>
+</html>
