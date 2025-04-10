@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>32-Year Countdown Clock</title>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left: "$", right: "$", display: false},
+          {left: "$$", right: "$$", display: true}
+        ]
+      });
+    });
+  </script>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      height: 100vh;
+      background: #111;
+      color: white;
+      font-family: sans-serif;
+      gap: 40px;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    .clock {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border: 8px solid #fff;
+      border-radius: 50%;
+      background: #222;
+    }
+
+    .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom;
+      background: white;
+      transform: translateX(-50%) rotate(0deg);
+    }
+
+    .second-hand {
+      height: 45%;
+      width: 2px;
+      background: red;
+    }
+
+    .hour-hand {
+      height: 35%;
+      width: 6px;
+    }
+
+    .day-hand {
+      height: 25%;
+      width: 10px;
+      background: #0f0;
+    }
+
+    .center-dot {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .label {
+      position: absolute;
+      top: 110%;
+      text-align: center;
+      width: 100%;
+    }
+
+    .frame {
+      background: #1e1e1e;
+      border: 2px solid #444;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 400px;
+      height: 300px;
+      overflow: auto;
+    }
+
+    code {
+      background-color: #333;
+      padding: 4px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<div class="frame">
+  <h3>Formula Overview</h3>
+  <p>This clock is based on the "Billionaire Model" described in the <a href="https://github.com/mahespth/billionaire-model" target="_blank" style="color: lightblue;">GitHub project</a>. It represents a countdown over 32 years.</p>
+  <p><strong>Core Formula:</strong></p>
+  <p>$$\text{Total} = \text{Income} - \text{Spending} + \text{Growth} - \text{Waste}$$</p>
+  <p>Where each element is influenced by variables such as time, effort, automation, and decay.</p>
+</div>
+
+<div class="clock">
+  <div class="hand second-hand" id="secondHand"></div>
+  <div class="hand hour-hand" id="hourHand"></div>
+  <div class="hand day-hand" id="dayHand"></div>
+  <div class="center-dot"></div>
+  <div class="label" id="timeLabel"></div>
+</div>
+
+<script>
+  // Total countdown duration: 32 years in milliseconds
+  const totalYears = 32;
+  const totalMs = totalYears * 365.25 * 24 * 60 * 60 * 1000;
+
+  // Set fixed start time to 26 March 2025 UTC
+  const countdownStart = new Date(Date.UTC(2025, 2, 26, 0, 0, 0)).getTime();
+
+  function updateClock() {
+    const now = Date.now();
+    const elapsed = now - countdownStart;
+    const remaining = Math.max(0, totalMs - elapsed);
+
+    const remainingSeconds = remaining / 1000;
+
+    // Breakdown
+    const years = remainingSeconds / (365.25 * 24 * 60 * 60);
+    const days = (years % 1) * 365.25;
+    const hours = (days % 1) * 24;
+    const seconds = (hours % 1) * 3600;
+
+    const dayFraction = (days % 365.25) / 365.25;
+    const hourFraction = (hours % 24) / 24;
+    const secondFraction = (seconds % 60) / 60;
+
+    const dayDeg = dayFraction * 360;
+    const hourDeg = hourFraction * 360;
+    const secondDeg = secondFraction * 360;
+
+    document.getElementById('secondHand').style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+    document.getElementById('hourHand').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+    document.getElementById('dayHand').style.transform = `translateX(-50%) rotate(${dayDeg}deg)`;
+
+    document.getElementById('timeLabel').textContent = `${years.toFixed(6)} years remaining`;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock();
+</script>
+
+</body>
+</html>
